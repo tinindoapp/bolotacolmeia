@@ -1,4 +1,10 @@
-# STATUS.md — 2026-10-11 (v0.2)
+# STATUS.md — 2026-10-11 (v0.3)
+
+## Novo nesta versão (v0.3)
+- **`marca-pronta/`**: pacote completo para download (logotipo e símbolo em cor, negativo, preto e branco; SVG, PNG em vários tamanhos e PDF vetorial; ícones de app para iOS/Android/PWA, favicon.ico/svg, redes sociais, papelaria com sangria, arquivos para bordado, cores em .ase/.gpl/.css/.json, 12 ícones de interface, padrão de pontos). Guia: `marca-pronta/LEIA-ME.md`. Verificado: SVG sem máscara/raster/script; PDFs sem imagens raster (vetoriais).
+- **Contornos fechados:** as metades do sorriso deixaram de usar `clipPath`; são formas independentes com arcos exatos (comparação pixel a pixel: idênticas na palavra e no símbolo).
+- **`mockups/site/`**: mockup do site em desktop (1440) e celular (390), com referência HTML.
+- **`mockups/app/`**: 10 telas do app do profissional (3×) e prancha de apresentação. Notas para o desenvolvedor: `mockups/LEIA-ME.md`.
 
 ## Concluído e verificado nesta sessão
 - Identidade “sorriso” (escolha do fundador, variante Z3) aplicada em todo o kit: wordmark e símbolo em 4 variantes (cor, negativo, preto, branco), símbolo com anel, variante óptica pequena, ícone de app (1024/512/192/180), avatar claro/escuro, favicon SVG + PNG 16/32/48, 12 ícones de interface. SVG e PNG regerados.
@@ -11,7 +17,7 @@
 ## Limitações e pendências
 1. **Pesquisa de referências NÃO feita** (rede bloqueada). Notas de “distinção” são hipóteses; inclui marcas que usam sorriso.
 2. **Diligência jurídica NÃO feita.** Dados da 3M/INPI (02/10/2026) são relatados, não reverificados. Sem comparação visual com a linha Tinindo da 3M.
-3. **Corte do sorriso:** implementado com `clipPath` (vetor real), **não unido em contorno único**. Unir em editor vetorial antes de gráfica, bordado ou vinil.
+3. **Corte do sorriso: resolvido.** As metades do sorriso agora são contornos fechados com arcos exatos (sem `clipPath`); comparação pixel a pixel com a versão anterior: 0 pixels de diferença no símbolo e na palavra; na variante pequena, ~1 px ao longo da curva interna (a versão nova é a geometricamente correta).
 4. Wordmark fino: mínimo 120 px; abaixo disso usar o símbolo. A fresta (uma cor) é a primeira coisa que some em tamanhos pequenos.
 5. **Nenhum teste com pessoas.** Risco de leitura “infantil/emoji”; matriz: sorriso 6,85 contra 7,80 do território B (julgamento de design).
 6. Acessibilidade: contraste medido; foco por teclado, leitor de tela e zoom 200% **não testados manualmente**. WCAG 2.2 citado de memória.
@@ -26,4 +32,4 @@
 Arte aprovada em 2026-10-11 (D28). Pendente: autorizar diligência jurídica; escolher assinatura verbal; indicar o repositório; autorizar pesquisa de referências com navegação.
 
 ## Próxima ação concreta
-Apresentar `apresentacao/Tinindo-apresentacao-socio.pptx`; registrar a decisão em `DECISIONS.md`. Em paralelo: advogado de PI analisa o nome; unir o corte do sorriso em contorno único; pedir provas de impressão e bordado. Retomar: abrir `STATUS.md`, `DECISIONS.md`, `BRAND.md`; regenerar com `assets/logo/source/build_kit.py`.
+Apresentar `apresentacao/Tinindo-apresentacao-socio.pptx`; registrar a decisão em `DECISIONS.md`. Em paralelo: advogado de PI analisa o nome; pedir provas de impressão e bordado. Retomar: abrir `STATUS.md`, `DECISIONS.md`, `BRAND.md`; regenerar com `assets/logo/source/build_kit.py`.

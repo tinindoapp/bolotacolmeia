@@ -1,6 +1,8 @@
-# tinindo-brand · v0.2 (provisória) · 2026-10-11
+# tinindo-brand · v0.3 · 2026-10-11 · arte aprovada
 
 Kit de identidade da Tinindo, identidade **“sorriso”** (preto + laranja): versais finas, pingos laranja nos dois “I” (os olhos), “O” inclinado cujo arco de baixo é um sorriso cortado em dentes de serra (duas peças que se encaixam). **Proposta**: não está aprovada pelo sócio, nem registrada, nem juridicamente liberada.
+
+**Para usar a marca agora:** `marca-pronta/` (ou o ZIP `tinindo-marca-pronta.zip`). **Mockups:** `mockups/` (site e app).
 
 Comece por: `apresentacao/Tinindo-apresentacao-socio.pptx` (27 slides, com notas do apresentador) → `STATUS.md` → `BRAND.md` → `guidelines/brand-manual.pdf` → `applications/preview.html` (abra no navegador).
 

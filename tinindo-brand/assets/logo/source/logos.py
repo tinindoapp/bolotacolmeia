@@ -2,7 +2,7 @@
 """Gera os logotipos Tinindo (3 territórios) como SVG vetorial puro.
 Todas as letras são formas preenchidas (sem <text>, sem stroke, sem raster)."""
 import os, json, sys
-OUT = os.environ["TOUT"]
+OUT = os.environ.get("TOUT", ".")
 
 def f(x):
     s = ("%.2f" % x).rstrip("0").rstrip(".")

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tinindo — geometria do logotipo (identidade final proposta v0.2: 'sorriso').
-Tudo é path preenchido. O recorte do sorriso usa clipPath (vetor real, sem raster/script).
+Tudo é path preenchido, sem clipPath, máscara, texto, raster ou script: as duas metades do sorriso são
+contornos fechados calculados analiticamente (arcos exatos + segmentos do corte).
 Wordmark: versais finas; os pingos dos 'I' = olhos; o 'O' = rosto inclinado (-10°) cujo arco inferior é o sorriso;
 o sorriso é cortado ao meio em dentes de serra (duas peças que se encaixam)."""
 import math, os
@@ -45,6 +46,48 @@ def clip_defs(pfx, kind, gap):
         out += f'<clipPath id="{pfx}{cid}"><path d="M' + "L".join(f"{f(x)},{f(y)}" for x, y in pts) + 'Z"/></clipPath>'
     return f"<defs>{out}</defs>"
 
+
+# ---------- metades do sorriso como contornos fechados (sem clipPath)
+def _ang(cx, cy, P): return math.degrees(math.atan2(P[1]-cy, P[0]-cx)) % 360
+def _seg_circle(P0, P1, C, r):
+    dx, dy = P1[0]-P0[0], P1[1]-P0[1]; fx, fy = P0[0]-C[0], P0[1]-C[1]
+    a = dx*dx+dy*dy; b = 2*(fx*dx+fy*dy); c = fx*fx+fy*fy-r*r; disc = b*b-4*a*c
+    if disc < 0: return []
+    sq = math.sqrt(disc); return sorted(t for t in ((-b-sq)/(2*a), (-b+sq)/(2*a)) if 0 <= t <= 1)
+def smile_halves(cx, cy, R, t, tmax, half, kind, gap):
+    """retorna (d_esquerda, d_direita); cada metade é um contorno fechado"""
+    aR = 90 - half; aL = 90 + half
+    PR = pt(cx, cy, R, aR); PL = pt(cx, cy, R, aL); QR = pt(cx, cy, R-t, aR); QL = pt(cx, cy, R-t, aL)
+    c = abs(QR[0]-QL[0])/2; sg = (cy+R-tmax) - QR[1]; r2 = (c*c + sg*sg)/(2*sg)
+    C2 = (cx, (cy+R-tmax) - r2); C1 = (cx, cy)
+    out = []
+    for side in (-1, 1):
+        sh = side*gap/2; poly = [(x+sh, y) for x, y in CUTS[kind]]
+        pin = pout = None; mid = []
+        for i in range(len(poly)-1):
+            P0, P1 = poly[i], poly[i+1]
+            ev = [(tt, "in") for tt in _seg_circle(P0, P1, C2, r2)] + [(tt, "out") for tt in _seg_circle(P0, P1, C1, R)]
+            for tt, kd in sorted(ev):
+                Q = (P0[0]+(P1[0]-P0[0])*tt, P0[1]+(P1[1]-P0[1])*tt)
+                if kd == "in" and pin is None: pin = Q
+                elif kd == "out" and pin is not None and pout is None: pout = Q
+            if pin is not None and pout is None and i+1 < len(poly)-1: mid.append(poly[i+1])
+        mid = [m for m in mid if (m[0]-C1[0])**2+(m[1]-C1[1])**2 < R*R and (m[0]-C2[0])**2+(m[1]-C2[1])**2 > r2*r2]
+        F = lambda P: f"{f(P[0])},{f(P[1])}"
+        a_out = _ang(cx, cy, pout)
+        if side < 0:   # metade esquerda: pin -> corte -> pout -> arco externo até PL -> QL -> arco interno até pin
+            span = (aL - a_out) % 360
+            d = f"M{F(pin)}" + "".join(f"L{F(m)}" for m in mid) + f"L{F(pout)}A{f(R)},{f(R)} 0 {1 if span>180 else 0} 1 {F(PL)}L{F(QL)}"
+            sp2 = (_ang(*C2, QL) - _ang(*C2, pin)) % 360
+            d += f"A{f(r2)},{f(r2)} 0 {1 if sp2>180 else 0} 0 {F(pin)}Z"
+        else:          # metade direita: pin -> corte -> pout -> arco externo até PR -> QR -> arco interno até pin
+            span = (a_out - aR) % 360
+            d = f"M{F(pin)}" + "".join(f"L{F(m)}" for m in mid) + f"L{F(pout)}A{f(R)},{f(R)} 0 {1 if span>180 else 0} 0 {F(PR)}L{F(QR)}"
+            sp2 = (_ang(*C2, pin) - _ang(*C2, QR)) % 360
+            d += f"A{f(r2)},{f(r2)} 0 {1 if sp2>180 else 0} 1 {F(pin)}Z"
+        out.append(d)
+    return out[0], out[1]
+
 # paletas: (tinta, ponto/olhos, sorriso esq., sorriso dir., fresta)
 PAL = {
  "color":  ("#111111", "#FF4B1F", "#FF4B1F", "#111111", 0),
@@ -56,9 +99,8 @@ def face_inner(mode, ring, small=False, pfx="a"):
     """grupo do rosto em coordenadas 0..100, já inclinado"""
     p = P["small" if small else "normal"]; ink, acc, sl, sr, gap = PAL[mode]
     if small and gap: gap = gap + 1.2
-    d_sm = crescent(50, 50, 50, p["t"], p["tmax"], HALF)
-    s = clip_defs(pfx, p["cut"], gap)
-    s += f'<path fill="{sl}" clip-path="url(#{pfx}L)" d="{d_sm}"/><path fill="{sr}" clip-path="url(#{pfx}R)" d="{d_sm}"/>'
+    dL, dR = smile_halves(50, 50, 50, p["t"], p["tmax"], HALF, p["cut"], gap)
+    s = f'<path fill="{sl}" d="{dL}"/><path fill="{sr}" d="{dR}"/>'
     if ring:
         s = f'<path fill="{ink}" d="{sector(50,50,50,50-p["t"],90+HALF,90-HALF+360)}"/>' + s
         ey, dx = p["ey_ring"], p["dx_ring"]
@@ -84,9 +126,9 @@ def wordmark_svg(mode, pfx="w", pad=4):
 def face_inner_O(mode, pfx):
     """o 'O' da palavra = anel + sorriso do símbolo (sem olhos: os olhos são os pingos dos I)"""
     p = P["normal"]; ink, acc, sl, sr, gap = PAL[mode]
-    d_sm = crescent(50, 50, 50, p["t"], p["tmax"], HALF)
-    return (f'<path fill="{ink}" d="{sector(50,50,50,50-p["t"],90+HALF,90-HALF+360)}"/>' + clip_defs(pfx, p["cut"], gap) +
-            f'<path fill="{sl}" clip-path="url(#{pfx}L)" d="{d_sm}"/><path fill="{sr}" clip-path="url(#{pfx}R)" d="{d_sm}"/>')
+    dL, dR = smile_halves(50, 50, 50, p["t"], p["tmax"], HALF, p["cut"], gap)
+    return (f'<path fill="{ink}" d="{sector(50,50,50,50-p["t"],90+HALF,90-HALF+360)}"/>'
+            f'<path fill="{sl}" d="{dL}"/><path fill="{sr}" d="{dR}"/>')
 
 def app_icon_svg(size=1024, rounded=False):
     k = size*0.58/100; o = (size-100*k)/2
@@ -102,8 +144,8 @@ def avatar_svg(dark=False, size=640):
 
 def favicon_svg():
     """variante óptica (corte reto, olhos maiores); troca a cor do lado direito conforme o tema do navegador"""
-    p = P["small"]; d_sm = crescent(50, 50, 50, p["t"], p["tmax"], HALF)
+    p = P["small"]; dL, dR = smile_halves(50, 50, 50, p["t"], p["tmax"], HALF, "straight", 0)
     eyes = "".join(f'<path class="e" d="{L.disc(50+s*p["dx_open"], p["ey_open"], p["er"])}"/>' for s in (-1, 1))
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 112 112" width="32" height="32"><title>Tinindo</title>'
             f'<style>.e,.l{{fill:#FF4B1F}}.r{{fill:#111111}}@media (prefers-color-scheme:dark){{.e,.l{{fill:#FF6A3D}}.r{{fill:#FFFFFF}}}}</style>'
-            f'{clip_defs("f", "straight", 0)}<g transform="rotate({ROT} 50 50)"><path class="l" clip-path="url(#fL)" d="{d_sm}"/><path class="r" clip-path="url(#fR)" d="{d_sm}"/>{eyes}</g></svg>\n')
+            f'<g transform="rotate({ROT} 50 50)"><path class="l" d="{dL}"/><path class="r" d="{dR}"/>{eyes}</g></svg>\n')

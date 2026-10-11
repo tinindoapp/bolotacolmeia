@@ -63,7 +63,7 @@ img{max-width:100%;height:auto;border-radius:6px}p.fig{break-inside:avoid;margin
 <p>As letras foram desenhadas como formas geométricas vetoriais, geradas por script (<code>assets/logo/source/</code>). <strong>O wordmark não é uma fonte</strong>: só existem T, I, N, D e O; não componha outras palavras com ele.</p>
 <h3>3.2 Arquivos mestres (<code>assets/logo/</code>)</h3>
 <table><thead><tr><th>Uso</th><th>SVG</th><th>PNG</th></tr></thead><tbody><tr><td>Wordmark positivo</td><td><code>tinindo-wordmark-color.svg</code></td><td>1200 px, transparente</td></tr><tr><td>Wordmark negativo (fundo escuro)</td><td><code>tinindo-wordmark-negativo-cor.svg</code></td><td>idem</td></tr><tr><td>Wordmark uma cor</td><td><code>tinindo-wordmark-preto.svg</code>, <code>…-branco.svg</code> (divisão do sorriso vira fresta)</td><td>idem</td></tr><tr><td>Símbolo principal (sem anel)</td><td><code>tinindo-symbol-{color,negativo-cor,preto,branco}.svg</code></td><td>512 px</td></tr><tr><td>Símbolo com anel (uso grande)</td><td><code>tinindo-symbol-anel-{color,negativo-cor}.svg</code></td><td>512 px</td></tr><tr><td>Símbolo pequeno, variante óptica (≤ 24 px)</td><td><code>tinindo-symbol-pequeno-optico-{color,negativo-cor,preto,branco}.svg</code></td><td>256 px</td></tr></tbody></table>
-<p>Os SVG são formas preenchidas (sem texto, raster ou script). O corte do sorriso usa <code>clipPath</code> (vetor real). <strong>Limitação:</strong> o corte não está unido em um contorno único; antes de gráfica, bordado ou corte de vinil, unir as formas em editor vetorial (ver STATUS.md).</p>
+<p>Os SVG são formas preenchidas e <strong>contornos fechados</strong>: sem máscara (<code>clipPath</code>), texto, raster ou script. As duas metades do sorriso são formas independentes com arcos exatos, prontas para gráfica, bordado, serigrafia e recorte de vinil. Pacote completo para uso (PNG em vários tamanhos, PDF vetorial, ícones de loja, redes sociais, papelaria, cores em .ase/.gpl): <code>marca-pronta/</code>.</p>
 <p class='fig'><img alt="Variantes e fundos" src="fig-fundos.png"></p>
 <h3>3.3 Uma cor: a fresta</h3>
 <p>Em preto ou branco puro não há duas cores para separar as metades; por isso o corte vira uma fresta fina. Em tamanhos pequenos a fresta é a primeira coisa que some: nesse caso usar a variante óptica (corte reto, olhos e sorriso maiores).</p>
@@ -159,6 +159,6 @@ img{max-width:100%;height:auto;border-radius:6px}p.fig{break-inside:avoid;margin
 <li><strong>Pesquisa de referências:</strong> pendente (<code>research/references.md</code>).</li>
 <li><strong>Risco de leitura “infantil” ou de emoji:</strong> mitigado por letras finas, preto adulto e proibição de sorrisos decorativos; <strong>não testado com pessoas</strong>.</li>
 <li><strong>Traço fino:</strong> wordmark só a partir de 120 px; abaixo disso, símbolo.</li>
-<li><strong>Duas cores e corte:</strong> reprodução em bordado, serigrafia e impressão precisa de prova; unir o corte em contorno único antes de produzir.</li>
+<li><strong>Duas cores e corte:</strong> reprodução em bordado, serigrafia e impressão precisa de prova (os arquivos já são contornos fechados).</li>
 <li>Fotografia, fontes além de Inter, auditoria de acessibilidade e <code>favicon.ico</code>: pendentes.</li>
 </ol></body></html>
