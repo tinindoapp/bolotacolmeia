@@ -23,7 +23,7 @@
 12. A apresentação foi renderizada com LibreOffice; fontes e quebras podem variar levemente no PowerPoint.
 
 ## Decisões humanas necessárias
-Sócio: aprovar ou ajustar a identidade; autorizar diligência jurídica; escolher assinatura verbal; indicar o repositório; autorizar pesquisa de referências com navegação.
+Arte aprovada em 2026-10-11 (D28). Pendente: autorizar diligência jurídica; escolher assinatura verbal; indicar o repositório; autorizar pesquisa de referências com navegação.
 
 ## Próxima ação concreta
 Apresentar `apresentacao/Tinindo-apresentacao-socio.pptx`; registrar a decisão em `DECISIONS.md`. Em paralelo: advogado de PI analisa o nome; unir o corte do sorriso em contorno único; pedir provas de impressão e bordado. Retomar: abrir `STATUS.md`, `DECISIONS.md`, `BRAND.md`; regenerar com `assets/logo/source/build_kit.py`.
